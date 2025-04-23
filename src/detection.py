@@ -11,7 +11,7 @@ def load_models():
     teeth_model = maskrcnn_resnet50_fpn(weights='DEFAULT')
     teeth_model.roi_heads.box_predictor.cls_score.out_features = 2
     teeth_model.roi_heads.mask_predictor.mask_fcn_logits.out_channels = 2
-    teeth_model.load_state_dict(torch.load('/Users/vivekmaddineni/Documents/BMEC/models/teeth_model.pth', map_location=device))
+    teeth_model.load_state_dict(torch.load('models/teeth_model.pth', map_location=device))
     teeth_model.to(device)
     teeth_model.eval()
     
@@ -19,7 +19,7 @@ def load_models():
     plaque_model = maskrcnn_resnet50_fpn(weights='DEFAULT')
     plaque_model.roi_heads.box_predictor.cls_score.out_features = 2
     plaque_model.roi_heads.mask_predictor.mask_fcn_logits.out_channels = 2
-    plaque_model.load_state_dict(torch.load('/Users/vivekmaddineni/Documents/BMEC/models/plaque_model.pth', map_location=device))
+    plaque_model.load_state_dict(torch.load('models/plaque_model.pth', map_location=device))
     plaque_model.to(device)
     plaque_model.eval()
     
@@ -366,9 +366,9 @@ def process_image(image_path):
         print(f"Tooth {i+1}: {tooth_type}")
     
     # Save results - use teeth_vis_with_labels for teeth_regions.jpg
-    cv2.imwrite('/Users/vivekmaddineni/Documents/BMEC/results/teeth_regions.jpg', cv2.cvtColor(teeth_vis_with_labels, cv2.COLOR_RGB2BGR))
-    cv2.imwrite('/Users/vivekmaddineni/Documents/BMEC/results/plaque_regions.jpg', cv2.cvtColor(plaque_vis, cv2.COLOR_RGB2BGR))
-    cv2.imwrite('/Users/vivekmaddineni/Documents/BMEC/results/combined_regions.jpg', cv2.cvtColor(combined_vis, cv2.COLOR_RGB2BGR))
+    cv2.imwrite('results/teeth_regions.jpg', cv2.cvtColor(teeth_vis_with_labels, cv2.COLOR_RGB2BGR))
+    cv2.imwrite('results/plaque_regions.jpg', cv2.cvtColor(plaque_vis, cv2.COLOR_RGB2BGR))
+    cv2.imwrite('results/combined_regions.jpg', cv2.cvtColor(combined_vis, cv2.COLOR_RGB2BGR))
     
     return {
         'teeth_pixels': teeth_pixels,
@@ -382,7 +382,7 @@ def process_image(image_path):
     }
 
 def main():
-    test_image_path = 'data/test/IMG_2476_jpeg_jpg.rf.fb80ee4c6bcb464efbd5c166cfdf461f.jpg'
+    test_image_path = 'data/plaque_only/test/2-c_jpeg_jpg.rf.5ada382d48be0bc71a12f5ec1394cb72.jpg'
     process_image(test_image_path)
     print("Detection complete! Check the results folder for the output images.")
 
