@@ -1,0 +1,175 @@
+{
+  "teeth_pixels": 53735,
+  "plaque_pixels": 7625,
+  "overlap_pixels": 6858,
+  "per_tooth": [
+    {
+      "tooth_index": 0,
+      "teeth_pixels": 3087,
+      "plaque_pixels": 0,
+      "overlap_pixels": 0,
+      "tooth_type": "LI",
+      "row": "top"
+    },
+    {
+      "tooth_index": 1,
+      "teeth_pixels": 2884,
+      "plaque_pixels": 1081,
+      "overlap_pixels": 1081,
+      "tooth_type": "CA",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 2,
+      "teeth_pixels": 3634,
+      "plaque_pixels": 0,
+      "overlap_pixels": 0,
+      "tooth_type": "CI",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 3,
+      "teeth_pixels": 3051,
+      "plaque_pixels": 0,
+      "overlap_pixels": 0,
+      "tooth_type": "LI",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 4,
+      "teeth_pixels": 2599,
+      "plaque_pixels": 0,
+      "overlap_pixels": 0,
+      "tooth_type": "LI",
+      "row": "top"
+    },
+    {
+      "tooth_index": 5,
+      "teeth_pixels": 3628,
+      "plaque_pixels": 1051,
+      "overlap_pixels": 1051,
+      "tooth_type": "CA",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 6,
+      "teeth_pixels": 3450,
+      "plaque_pixels": 0,
+      "overlap_pixels": 0,
+      "tooth_type": "LI",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 7,
+      "teeth_pixels": 3467,
+      "plaque_pixels": 0,
+      "overlap_pixels": 0,
+      "tooth_type": "CI",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 8,
+      "teeth_pixels": 1773,
+      "plaque_pixels": 6,
+      "overlap_pixels": 6,
+      "tooth_type": "P1",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 9,
+      "teeth_pixels": 2293,
+      "plaque_pixels": 698,
+      "overlap_pixels": 698,
+      "tooth_type": "CA",
+      "row": "top"
+    },
+    {
+      "tooth_index": 10,
+      "teeth_pixels": 6679,
+      "plaque_pixels": 1850,
+      "overlap_pixels": 1850,
+      "tooth_type": "CI",
+      "row": "top"
+    },
+    {
+      "tooth_index": 11,
+      "teeth_pixels": 2965,
+      "plaque_pixels": 29,
+      "overlap_pixels": 29,
+      "tooth_type": "CA",
+      "row": "top"
+    },
+    {
+      "tooth_index": 12,
+      "teeth_pixels": 1146,
+      "plaque_pixels": 371,
+      "overlap_pixels": 371,
+      "tooth_type": "P2",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 13,
+      "teeth_pixels": 1691,
+      "plaque_pixels": 488,
+      "overlap_pixels": 488,
+      "tooth_type": "P1",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 14,
+      "teeth_pixels": 6812,
+      "plaque_pixels": 0,
+      "overlap_pixels": 0,
+      "tooth_type": "CI",
+      "row": "top"
+    },
+    {
+      "tooth_index": 15,
+      "teeth_pixels": 925,
+      "plaque_pixels": 312,
+      "overlap_pixels": 312,
+      "tooth_type": "P2",
+      "row": "bottom"
+    },
+    {
+      "tooth_index": 16,
+      "teeth_pixels": 732,
+      "plaque_pixels": 195,
+      "overlap_pixels": 195,
+      "tooth_type": "P2",
+      "row": "top"
+    },
+    {
+      "tooth_index": 17,
+      "teeth_pixels": 948,
+      "plaque_pixels": 354,
+      "overlap_pixels": 354,
+      "tooth_type": "P1",
+      "row": "top"
+    },
+    {
+      "tooth_index": 18,
+      "teeth_pixels": 892,
+      "plaque_pixels": 0,
+      "overlap_pixels": 0,
+      "tooth_type": "P1",
+      "row": "top"
+    },
+    {
+      "tooth_index": 19,
+      "teeth_pixels": 934,
+      "plaque_pixels": 440,
+      "overlap_pixels": 440,
+      "tooth_type": "MO",
+      "row": "top"
+    },
+    {
+      "tooth_index": 20,
+      "teeth_pixels": 512,
+      "plaque_pixels": 0,
+      "overlap_pixels": 0,
+      "tooth_type": "P2",
+      "row": "top"
+    }
+  ]
+}

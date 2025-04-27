@@ -1,3 +1,4 @@
+import json
 import torch
 import cv2
 import numpy as np
@@ -63,10 +64,10 @@ def create_visualization(image, masks, color, thickness=2):
 def classify_teeth(boxes, image_width):
     """
     Classify all teeth with respect to central incisors.
+    Returns: tooth_types, tooth_rows (list of 'top' or 'bottom' for each tooth)
     """
-    # If we have fewer than 4 teeth, we can't reliably identify central incisors
     if len(boxes) < 4:
-        return [None] * len(boxes)
+        return [None] * len(boxes), [None] * len(boxes)
     
     # Calculate centroids and areas of each tooth
     centroids = []
@@ -87,15 +88,16 @@ def classify_teeth(boxes, image_width):
     # Separate teeth into top and bottom rows based on y-coordinate
     top_teeth = []
     bottom_teeth = []
-    
+    tooth_rows = [None] * len(boxes)
     # Calculate average y-coordinate to determine the dividing line between top and bottom
     avg_y = sum(c[1] for c in centroids) / len(centroids)
-    
     for i, (x, y) in enumerate(centroids):
         if y < avg_y:  # Above the average y-coordinate (top row)
             top_teeth.append((i, x, y, areas[i]))
+            tooth_rows[i] = 'top'
         else:  # Below the average y-coordinate (bottom row)
             bottom_teeth.append((i, x, y))
+            tooth_rows[i] = 'bottom'
     
     # Initialize tooth types
     tooth_types = [None] * len(boxes)
@@ -252,7 +254,7 @@ def classify_teeth(boxes, image_width):
                     else:
                         tooth_types[idx] = "MO"  # Molar
     
-    return tooth_types
+    return tooth_types, tooth_rows
 
 def process_image(image_path):
     # Load models
@@ -267,7 +269,7 @@ def process_image(image_path):
     teeth_masks, teeth_boxes = get_predictions(teeth_model, image, device, confidence_threshold=0.8)
     
     # Classify teeth
-    tooth_types = classify_teeth(teeth_boxes, image.shape[1])
+    tooth_types, tooth_rows = classify_teeth(teeth_boxes, image.shape[1])
     
     # Prepare plaque image with enhancement
     plaque_image = cv2.addWeighted(image, 1.2, image, 0, 10)
@@ -343,48 +345,52 @@ def process_image(image_path):
         contours, _ = cv2.findContours(mask_uint8, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cv2.drawContours(combined_vis, contours, -1, [255, 0, 0], 2)
     
-    # Calculate image dimensions and percentages
-    total_image_pixels = image.shape[0] * image.shape[1]
-    teeth_percentage = (teeth_pixels / total_image_pixels) * 100
-    plaque_percentage = (plaque_pixels / total_image_pixels) * 100
-    
-    # Print results
-    print("\nDetection Results:")
-    print(f"Total Image Size: {total_image_pixels} pixels")
-    print(f"Teeth Area: {teeth_pixels} pixels ({teeth_percentage:.2f}% of image)")
-    print(f"Plaque Area: {plaque_pixels} pixels ({plaque_percentage:.2f}% of image)")
-    
     # Calculate overlap
     overlap_mask = teeth_mask & plaque_mask
     overlap_pixels = np.sum(overlap_mask)
-    overlap_percentage = (overlap_pixels / teeth_pixels) * 100 if teeth_pixels > 0 else 0
-    print(f"Plaque-Teeth Overlap: {overlap_pixels} pixels ({overlap_percentage:.2f}% of teeth area)")
-    
-    # Print tooth classification results
-    print("\nTooth Classification:")
-    for i, tooth_type in enumerate(tooth_types):
-        print(f"Tooth {i+1}: {tooth_type}")
-    
+
+    # Per-tooth pixel calculations
+    per_tooth = []
+    plaque_mask_binary = (plaque_mask > 0.5)
+    for i, tooth_mask in enumerate(teeth_masks):
+        tooth_mask_binary = (tooth_mask[0] > 0.5)
+        teeth_pixels_i = int(np.sum(tooth_mask_binary))
+        overlap_pixels_i = int(np.sum(tooth_mask_binary & plaque_mask_binary))
+        plaque_pixels_i = int(np.sum(plaque_mask_binary & tooth_mask_binary))  # same as overlap
+        per_tooth.append({
+            'tooth_index': i,
+            'teeth_pixels': teeth_pixels_i,
+            'plaque_pixels': plaque_pixels_i,
+            'overlap_pixels': overlap_pixels_i,
+            'tooth_type': tooth_types[i] if i < len(tooth_types) else None,
+            'row': tooth_rows[i] if i < len(tooth_rows) else None
+        })
+
     # Save results - use teeth_vis_with_labels for teeth_regions.jpg
     cv2.imwrite('results/teeth_regions.jpg', cv2.cvtColor(teeth_vis_with_labels, cv2.COLOR_RGB2BGR))
     cv2.imwrite('results/plaque_regions.jpg', cv2.cvtColor(plaque_vis, cv2.COLOR_RGB2BGR))
     cv2.imwrite('results/combined_regions.jpg', cv2.cvtColor(combined_vis, cv2.COLOR_RGB2BGR))
+
     
-    return {
-        'teeth_pixels': teeth_pixels,
-        'plaque_pixels': plaque_pixels,
-        'overlap_pixels': overlap_pixels,
-        'total_pixels': total_image_pixels,
-        'teeth_percentage': teeth_percentage,
-        'plaque_percentage': plaque_percentage,
-        'overlap_percentage': overlap_percentage,
-        'tooth_types': tooth_types
+    result = {
+        'teeth_pixels': int(teeth_pixels),
+        'plaque_pixels': int(plaque_pixels),
+        'overlap_pixels': int(overlap_pixels),
+        'per_tooth': per_tooth
     }
+    with open('results/metrics.json', 'w') as f:
+        json.dump(result, f, indent=2)
+    return result
+
+import sys
 
 def main():
-    test_image_path = 'data/plaque_only/test/2-c_jpeg_jpg.rf.5ada382d48be0bc71a12f5ec1394cb72.jpg'
-    process_image(test_image_path)
-    print("Detection complete! Check the results folder for the output images.")
+    if len(sys.argv) > 1:
+        image_path = sys.argv[1]
+    else:
+        image_path = 'data/tooth_only/train/2-a_jpeg_jpg.rf.7ee5b638039c5c12344cb0ae64ad2640.jpg'
+    result = process_image(image_path)
+    print(json.dumps(result, indent=2))
 
 if __name__ == "__main__":
     main()
