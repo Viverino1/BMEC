@@ -5,8 +5,10 @@ const path = require("path");
 const fs = require("fs");
 const os = require("os");
 const { spawn } = require("child_process");
+const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(cors());
+const PORT = 3007;
 
 // Set up storage for uploaded files (in memory for demo)
 const storage = multer.memoryStorage();
